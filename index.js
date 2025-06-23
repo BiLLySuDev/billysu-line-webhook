@@ -11,7 +11,7 @@ const config = {
 
 const client = new line.Client(config);
 
-// webhook 接收訊息路由
+// Webhook 路由
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const events = req.body.events;
@@ -20,24 +20,20 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         if (event.type === "message" && event.message.type === "text") {
           return client.replyMessage(event.replyToken, {
             type: "text",
-            text: `📨 你說的是：「${event.message.text}」`,
+            text: `👉 你的訊息是：${event.message.text}`,
           });
         }
       })
     );
     res.json(results);
   } catch (err) {
-    console.error("Webhook error:", err);
+    console.error("錯誤發生：", err);
     res.status(500).end();
   }
 });
 
-// 主動推播測試用
-app.get("/", (req, res) => {
-  res.send("✅ BiLLySu Webhook Server Running!");
-});
-
+// 啟動伺服器
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
+  console.log(`✅ LINE Webhook server 已啟動：port ${port}`);
 });
